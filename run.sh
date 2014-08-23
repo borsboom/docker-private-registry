@@ -68,6 +68,7 @@ http {
         server {
             listen 80;
             client_max_body_size 0;
+            chunked_transfer_encoding on;
             proxy_set_header Host \$http_host;
             proxy_set_header X-Forwarded-Host \$host;
             proxy_set_header X-Real-IP \$remote_addr;
@@ -78,6 +79,7 @@ http {
                 auth_basic "$REGISTRY_NAME";
                 auth_basic_user_file $PASSWORD_FILE;
                 proxy_pass http://registry;
+                proxy_read_timeout 900;
             }
             location /v1/_ping {
                 auth_basic off;
@@ -112,6 +114,7 @@ if [ ! -z "$SSL_CERT_PATH" ]; then
             ssl_certificate $SSL_CERT_PATH;
             ssl_certificate_key $SSL_CERT_KEY_PATH;
             client_max_body_size 0;
+            chunked_transfer_encoding on;
             proxy_set_header Host \$http_host;
             proxy_set_header X-Forwarded-Host \$host;
             proxy_set_header X-Real-IP \$remote_addr;
@@ -122,6 +125,7 @@ if [ ! -z "$SSL_CERT_PATH" ]; then
                 auth_basic "$REGISTRY_NAME";
                 auth_basic_user_file $PASSWORD_FILE;
                 proxy_pass http://registry;
+                proxy_read_timeout 900;
             }
             location /v1/_ping {
                 auth_basic off;
