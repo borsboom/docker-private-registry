@@ -204,8 +204,7 @@ stopsignal=QUIT
 [program:registry]
 priority=10
 user=root
-command=gunicorn --access-logfile - --debug --max-requests 5000 --graceful-timeout 3600 -t 3600 -k gevent -b 0.0.0.0:5000 -w 4 wsgi:application
-directory=/docker-registry
+command=docker-registry
 autostart=true
 autorestart=true
 stopsignal=QUIT
@@ -233,8 +232,13 @@ if [ ! -e $PASSWORD_FILE ] ; then
     htpasswd -bc $PASSWORD_FILE admin $ADMIN_PASSWORD    
 fi
 
-# configure registry
-cd /docker-registry
-bash setup-configs.sh
+# Compatibility with older version's shipyard/docker-registry environment variables
+export AWS_BUCKET=${AWS_BUCKET:-$S3_BUCKET}
+export AWS_KEY=${AWS_KEY:-$AWS_ACCESS_KEY_ID}
+export AWS_SECRET=${AWS_SECRET:-$AWS_SECRET_KEY}
+export AWS_ENCRYPT=${AWS_ENCRYPT:-$S3_ENCRYPT}
+export AWS_SECURE=${AWS_SECURE:-$S3_SECURE}
+export OS_CONTAINER=${OS_CONTAINER:-$SWIFT_CONTAINER}
+
 # run supervisor
 supervisord -c /etc/supervisor/supervisor.conf -n

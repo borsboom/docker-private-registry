@@ -1,4 +1,4 @@
-from shipyard/docker-registry
+from registry
 maintainer Shipyard Project "http://shipyard-project.com"
 run apt-get update
 run apt-get -y upgrade
