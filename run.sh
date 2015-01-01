@@ -76,8 +76,9 @@ http {
             proxy_set_header X-Scheme \$scheme;
             proxy_set_header Authorization  "";
             location / {
-                auth_basic "$REGISTRY_NAME";
-                auth_basic_user_file $PASSWORD_FILE;
+                limit_except GET {
+                    deny all;
+                }
                 proxy_pass http://registry;
                 proxy_read_timeout 900;
             }
@@ -122,8 +123,10 @@ if [ ! -z "$SSL_CERT_PATH" ]; then
             proxy_set_header X-Scheme \$scheme;
             proxy_set_header Authorization  "";
             location / {
-                auth_basic "$REGISTRY_NAME";
-                auth_basic_user_file $PASSWORD_FILE;
+                limit_except GET {
+                    auth_basic "$REGISTRY_NAME";
+                    auth_basic_user_file $PASSWORD_FILE;
+                }
                 proxy_pass http://registry;
                 proxy_read_timeout 900;
             }
@@ -229,7 +232,7 @@ EOF
 
 # create password file if needed
 if [ ! -e $PASSWORD_FILE ] ; then
-    htpasswd -bc $PASSWORD_FILE admin $ADMIN_PASSWORD    
+    htpasswd -bc $PASSWORD_FILE admin $ADMIN_PASSWORD
 fi
 
 # Compatibility with older version's shipyard/docker-registry environment variables
