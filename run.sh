@@ -82,29 +82,29 @@ http {
                 proxy_pass http://registry;
                 proxy_read_timeout 900;
             }
-            location /v1/_ping {
-                auth_basic off;
-                proxy_pass http://registry;
-            }
-            location /v1/users {
-                auth_basic off;
-                proxy_pass http://registry;
-            }
-            location /static {
-                alias /app/static;
-                expires 1d;
-            }
-            location = /manage { rewrite ^ /manage/; }
-            location /manage/ { try_files \$uri @manage; }
-            location @manage {
-                auth_basic "$REGISTRY_NAME";
-                auth_basic_user_file $PASSWORD_FILE;
-                proxy_redirect off;
-                include uwsgi_params;
-                uwsgi_param SCRIPT_NAME /manage;
-                uwsgi_modifier1 30;
-                uwsgi_pass unix:/tmp/uwsgi-manage.sock;
-            }
+            #location /v1/_ping {
+            #    auth_basic off;
+            #    proxy_pass http://registry;
+            #}
+            #location /v1/users {
+            #    auth_basic off;
+            #    proxy_pass http://registry;
+            #}
+            #location /static {
+            #    alias /app/static;
+            #    expires 1d;
+            #}
+            #location = /manage { rewrite ^ /manage/; }
+            #location /manage/ { try_files \$uri @manage; }
+            #location @manage {
+            #    auth_basic "$REGISTRY_NAME";
+            #    auth_basic_user_file $PASSWORD_FILE;
+            #    proxy_redirect off;
+            #    include uwsgi_params;
+            #    uwsgi_param SCRIPT_NAME /manage;
+            #    uwsgi_modifier1 30;
+            #    uwsgi_pass unix:/tmp/uwsgi-manage.sock;
+            #}
         }
 EOF
 if [ ! -z "$SSL_CERT_PATH" ]; then
